@@ -1,0 +1,52 @@
+# Understanding `LocalProbeBlocked` & Resolution Guide
+
+## What is `LocalProbeBlocked`?
+`LocalProbeBlocked` is a custom status used in this email verification engine. It indicates that the remote mail server (vial MX records) actively rejected the verification "probe" because it does not trust the computer sending the request.
+
+This is **not** a bug in the code; it is a security restriction on the part of the email provider (Gmail, Outlook, Zoho, etc.).
+
+---
+
+## Why did it happen?
+Most major email providers use the following criteria to block verification attempts:
+
+1. **Residential IP Range**: If you are running the script from your home or office, your IP address is flagged as "Residential" or "Dynamic." Real mail servers almost never use these ranges, so providers assume the request is from a spammer.
+2. **SMTP Port 25 Filtering**: Many ISPs (Internet Service Providers) block outgoing traffic on Port 25 to prevent malware on personal computers from sending spam.
+3. **Lack of PTR/Reverse DNS**: Legitimate mail servers have "Reverse DNS" records that map their IP address back to a domain name. Most home connections do not have this.
+4. **Rate Limiting**: If you check too many emails too quickly from the same IP, the provider will temporarily block you.
+
+---
+
+## How to Fix It
+
+### 1. Use a Cloud Server (Recommended)
+Running the script from a Data Center IP (Cloud Provider) significantly increases your success rate.
+
+### 2. Configure a Dedicated SMTP Relay
+Instead of connecting directly to the destination MX server, you can route your requests through an SMTP relay service. However, for **verification** logic, direct connection to the MX is usually required to see if the specific mailbox exists.
+
+### 3. IP Warm-up
+If you use a new server, start with a few requests and gradually increase volume.
+
+---
+
+## Free Cloud Server Suggestions
+
+| Provider | Free Tier Info | Port 25 Status | Best For |
+| :--- | :--- | :--- | :--- |
+| **Oracle Cloud** | "Always Free" Arm Instances | **Blocked** (Require Ticket) | High-performance long-term use. |
+| **PythonAnywhere** | Beginner Free Account | **Limited** (Allow common) | Quick and easy Python scripts. |
+| **Google Cloud** | $300 Credit + e2-micro | **Strictly Blocked** | General testing (not great for SMTP). |
+| **Kamatera** | 30-Day Free Trial | **Open / Easy Request** | High-volume testing and verification. |
+| **AWS** | 12-Month Free Tier | **Blocked** (Request to lift) | Professional production setups. |
+
+> [!IMPORTANT]
+> **Pro-Tip**: Most providers will open Port 25 if you open a support ticket and explain that you are building a "Legitimate Email Validation Tool." Avoid saying you are "sending emails," as that sounds like spam.
+
+---
+
+## Summary of Resolution Steps
+1. **Choose a Provider**: Sign up for Oracle Cloud or use a Kamatera Trial.
+2. **Setup Environment**: Install Python and dependencies (`pip install email-validator dnspython`).
+3. **Deploy Code**: Move [main.py](file:///c:/Users/cool/Desktop/mail%20verificad/main.py), `validator_core.py`, and [resources.py](file:///c:/Users/cool/Desktop/mail%20verificad/resources.py) to the server.
+4. **Test Connection**: If you still see `LocalProbeBlocked`, open a support ticket with the provider to "Unblock Outbound SMTP Port 25."

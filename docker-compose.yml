@@ -1,0 +1,8 @@
+services:
+  email-validator:
+    build: .
+    ports:
+      - "8501:7860"
+    restart: always
+    environment:
+      - PYTHONUNBUFFERED=1
