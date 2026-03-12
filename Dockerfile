@@ -7,20 +7,20 @@ ENV PYTHONUNBUFFERED 1
 # Set work directory
 WORKDIR /app
 
-# Install dependencies
+# Install system dependencies
 RUN apt-get update && apt-get install -y \
     build-essential \
     && rm -rf /var/lib/apt/lists/*
 
+# Install Python dependencies
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
-RUN pip install streamlit
 
 # Copy project
 COPY . .
 
-# Expose port (Hugging Face default)
+# Expose port
 EXPOSE 7860
 
-# Run app
-CMD ["streamlit", "run", "app.py", "--server.port=7860", "--server.address=0.0.0.0"]
+# Run FastAPI with Uvicorn
+CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "7860"]

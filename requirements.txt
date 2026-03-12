@@ -1,6 +1,8 @@
 email-validator
 dnspython
-streamlit
 pandas
 xlsxwriter
 openpyxl
+fastapi
+uvicorn[standard]
+python-multipart
